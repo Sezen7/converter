@@ -1,10 +1,14 @@
+<?php
+// converter.php dosyasını dahil ettim
+require_once "converter.php";
+?>
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Döviz Çevirici</title>
-    <link rel="stylesheet" href="style.css"> <!-- CSS dosyasını bağladık -->
+    <link rel="stylesheet" href="style.css"> <!-- CSS dosyasını bağladım -->
 </head>
 <body>
     <div class="converter-container">
@@ -31,27 +35,21 @@
         </form>
 
         <?php
+        
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['convert'])) {
             $from_currency = $_POST['from_currency'];
             $to_currency = $_POST['to_currency'];
             $amount = floatval($_POST['amount']);
 
-            // API bağlantısı için yer bırakıldı
-            $api_url = "http://hasanadiguzel.com.tr/api/kurgetir";
+            // Dönüştürme fonksiyonunu çağır
+            $result = convertCurrency($amount, $from_currency, $to_currency);
 
-            // API'den veri al
-            $response = file_get_contents($api_url);
-            $data = json_decode($response, true);}
-
-            if ($data && isset($data['TCMB_AnlikKurBilgileri'])) {
-                $kur_bilgileri = $data['TCMB_AnlikKurBilgileri'];
-                echo "<pre>";
-                print_r($kur_bilgileri); // Tüm kur bilgilerini yazdır
-                echo "</pre>";
-            } else {
-                echo "Kur bilgisi alınamadı.";
-            }
-            ?>
+            
+            echo "<p><strong>Sonuç:</strong> $amount $from_currency = $result $to_currency</p>";
+        }
+        ?>
+        
+            
     </div>
 </body>
 </html>
