@@ -1,6 +1,7 @@
 <?php
+ function fetchExchangeRates(){
         // API URL'si
-        $api_url = "http://hasanadiguzel.com.tr/api/kurgetir";
+        $api_url = "https://hasanadiguzel.com.tr/api/kurgetir";
         
         // cURL isteği başlat
         $curl = curl_init($api_url);
@@ -21,10 +22,12 @@
         // Çıktıyı kontrol et
         if ($data && isset($data['TCMB_AnlikKurBilgileri'])) {
             $kur_bilgileri = $data['TCMB_AnlikKurBilgileri'];
-            echo "<pre>";
-            print_r($kur_bilgileri); // Tüm kur bilgilerini yazdır
-            echo "</pre>";
+            return($kur_bilgileri); // Tüm kur bilgilerini yazdır
+            
         } else {
             echo "Kur bilgisi alınamadı.";
+            var_dump($response);
+
         }
+    }
         ?>

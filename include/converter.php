@@ -2,9 +2,11 @@
 // api.php dosyasını dahil ettim
 require_once "api.php";
 
-function convertCurrency($amount, $from_currency, $to_currency) {
+function convert($amount, $from_currency, $to_currency) {
     // Kur bilgilerini API'den aldım
     $rates = fetchExchangeRates();
+    /*var_dump($rates);
+    die();*/
 
     if ($rates === null) {
         return "Kur bilgisi alınamadı.";
@@ -15,10 +17,10 @@ function convertCurrency($amount, $from_currency, $to_currency) {
 
     // Kaynak kurun ve hedef kurun değerlerini buldum
     foreach ($rates as $rate) {
-        if ($rate['DovizKod'] === $from_currency) {
+        if ($rate['Isim'] === $from_currency) {
             $from_rate = floatval($rate['ForexSelling']);
         }
-        if ($rate['DovizKod'] === $to_currency) {
+        if ($rate['Isim'] === $to_currency) {
             $to_rate = floatval($rate['ForexSelling']);
         }
     }
@@ -29,7 +31,7 @@ function convertCurrency($amount, $from_currency, $to_currency) {
     }
 
     // Dönüşüm hesaplama
-    $converted_amount = ($amount / $from_rate) * $to_rate;
+    $converted_amount = ($amount / $to_rate) * $from_rate;
 
     return number_format($converted_amount, 2); // Sonucu formatla
 }
