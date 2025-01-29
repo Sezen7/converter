@@ -14,6 +14,13 @@ function convert($amount, $from_currency, $to_currency) {
 
     $from_rate = null;
     $to_rate = null;
+    
+    if($from_currency === 'TRY') {
+        $from_rate = 1;
+    }
+    if($to_currency === 'TRY') {
+        $to_rate = 1;
+    }
 
     // Kaynak kurun ve hedef kurun değerlerini buldum
     foreach ($rates as $rate) {

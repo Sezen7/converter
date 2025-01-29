@@ -24,8 +24,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['convert'])) {
         case "EURO":
             $to="EURO";
             break;
-        
-
     }
     $amount = floatval($_POST['amount']);
 
@@ -33,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['convert'])) {
     $result = convert($amount, $from, $to);
 
     
-    echo "<p><strong>Sonuç:</strong> $amount $from_currency = $result $to_currency</p>";
+    //echo "<p><strong>Sonuç:</strong> $amount $from_currency = $result $to_currency</p>";
 }
 
 ?>
@@ -44,11 +42,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['convert'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Döviz Çevir</title>
-    <link rel="stylesheet" href="style.css"> <!-- CSS dosyasını bağladım -->
+    <link rel="stylesheet" href="style/style.css"> <!-- CSS dosyasını bağladım -->
 </head>
 <body>
     <div class="converter-container">
         <h2>Döviz Çevir</h2>
+        <?php 
+            if(isset($result)) {
+                echo "<p><strong>Sonuç:</strong> $amount $from_currency = $result $to_currency</p>";
+            }
+            else {
+        ?>
         <form action="" method="post">
             <label for="from_currency">Kaynak Kur:</label>
             <select id="from_currency" name="from_currency">
@@ -69,6 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['convert'])) {
 
             <button type="submit" name="convert">Çevir</button>
         </form>
+        <?php } ?>
 
         <?php
         
