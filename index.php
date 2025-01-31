@@ -43,6 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['convert'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Döviz Çevir</title>
     <link rel="stylesheet" href="style/style.css"> <!-- CSS dosyasını bağladım -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico"> <!--icon degistirdim-->
 </head>
 <body>
     <div class="converter-container">
@@ -53,6 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['convert'])) {
             }
             else {
         ?>
+
         <form action="" method="post">
             <label for="from_currency">Kaynak Kur:</label>
             <select id="from_currency" name="from_currency">
@@ -72,6 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['convert'])) {
             <input type="number" id="amount" name="amount" step="0.01" placeholder="Miktar giriniz" required>
 
             <button type="submit" name="convert">Çevir</button>
+
         </form>
         <?php } ?>
 
@@ -79,6 +82,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['convert'])) {
         
         
         ?>
+        <!--sonuc sekmesine hesaplamaya geri dön butonu ekledim-->
+        <?php if (isset($result)) { ?>
+           <a href="index.php" class="geri-don-buton">Geri Dön</a> 
+        <?php } ?>
+
+
+
         
             
     </div>
