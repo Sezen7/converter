@@ -76,6 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['convert'])) {
             <button type="submit" name="convert">Çevir</button>
 
         </form>
+        
         <?php } ?>
 
         <?php
@@ -92,6 +93,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['convert'])) {
         
             
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#converterForm').on('submit', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: 'POST',
+                url: 'converter.php',
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        $('#result').html('<p><strong>Sonuç:</strong> ' + response.amount + ' ' + response.from_currency + ' = ' + response.result + ' ' + response.to_currency + '</p>');
+                    } else {
+                        $('#result').html('<p>Hata: ' + response.message + '</p>');
+                    }
+                },
+                error: function() {
+                    $('#result').html('<p>Bir hata oluştu, lütfen tekrar deneyin.</p>');
+                }
+            });
+        });
+    });
+</script>
+
 </body>
 </html>
         

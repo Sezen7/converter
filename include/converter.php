@@ -42,4 +42,27 @@ function convert($amount, $from_currency, $to_currency) {
 
     return number_format($converted_amount, 2); // Sonucu formatla
 }
+// AJAX POST isteğini işle
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $amount = isset($_POST['amount']) ? floatval($_POST['amount']) : 0;
+    $from_currency = $_POST['from_currency'] ?? '';
+    $to_currency = $_POST['to_currency'] ?? '';
+
+    $result = convert($amount, $from_currency, $to_currency);
+
+    if ($result !== null) {
+        echo json_encode([
+            'success' => true,
+            'amount' => $amount,
+            'from_currency' => $from_currency,
+            'to_currency' => $to_currency,
+            'result' => $result
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Kur bilgisi alınamadı veya geçersiz kur seçimi.'
+        ]);
+    }
+}
 ?>
