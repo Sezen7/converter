@@ -1,124 +1,70 @@
-<?php
-require_once "include/converter.php";
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['convert'])) {
-    $from_currency = $_POST['from_currency'];
-    switch($from_currency){
-        case "USD":
-            $from="ABD DOLARI";
-            break;
-        case "TRY":
-            $from="TRY";
-            break;
-        case "EURO":
-            $from="EURO";
-            break;
-    }
-    $to_currency = $_POST['to_currency'];
-    switch($to_currency){
-        case "USD":
-            $to="ABD DOLARI";
-            break;
-        case "TRY":
-            $to="TRY";
-            break;
-        case "EURO":
-            $to="EURO";
-            break;
-    }
-    $amount = floatval($_POST['amount']);
-
-    // Dönüştürme fonksiyonunu çağır
-    $result = convert($amount, $from, $to);
-
-    
-    //echo "<p><strong>Sonuç:</strong> $amount $from_currency = $result $to_currency</p>";
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Döviz Çevir</title>
-    <link rel="stylesheet" href="style/style.css"> <!-- CSS dosyasını bağladım -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico"> <!--icon degistirdim-->
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="converter-container">
         <h2>Döviz Çevir</h2>
-        <?php 
-            if(isset($result)) {
-                echo "<p><strong>Sonuç:</strong> $amount $from_currency = $result $to_currency</p>";
-            }
-            else {
-        ?>
 
-        <form action="" method="post">
+        <form id="converterForm">
             <label for="from_currency">Kaynak Kur:</label>
             <select id="from_currency" name="from_currency">
                 <option value="USD">USD - Amerikan Doları</option>
-                <option value="EURO">EUR - Euro</option>
+                <option value="EUR">EUR - Euro</option>
                 <option value="TRY">TRY - Türk Lirası</option>
             </select>
 
             <label for="to_currency">Hedef Kur:</label>
             <select id="to_currency" name="to_currency">
                 <option value="USD">USD - Amerikan Doları</option>
-                <option value="EURO">EUR - Euro</option>
+                <option value="EUR">EUR - Euro</option>
                 <option value="TRY">TRY - Türk Lirası</option>
             </select>
 
             <label for="amount">Tutar:</label>
             <input type="number" id="amount" name="amount" step="0.01" placeholder="Miktar giriniz" required>
 
-            <button type="submit" name="convert">Çevir</button>
-
+            <button type="button" id="convertButton">Çevir</button>
         </form>
-        
-        <?php } ?>
 
-        <?php
-        
-        
-        ?>
-        <!--sonuc sekmesine hesaplamaya geri dön butonu ekledim-->
-        <?php if (isset($result)) { ?>
-           <a href="index.php" class="geri-don-buton">Geri Dön</a> 
-        <?php } ?>
-
-
-
-        
-            
+        <div id="result"></div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('#converterForm').on('submit', function(e) {
-            e.preventDefault();
 
-            $.ajax({
-                type: 'POST',
-                url: 'converter.php',
-                data: $(this).serialize(),
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        $('#result').html('<p><strong>Sonuç:</strong> ' + response.amount + ' ' + response.from_currency + ' = ' + response.result + ' ' + response.to_currency + '</p>');
-                    } else {
-                        $('#result').html('<p>Hata: ' + response.message + '</p>');
+    <script>
+        $(document).ready(function() {
+            $('#convertButton').on('click', function() {
+                $.ajax({
+                    url: 'https://hasanadiguzel.com.tr/api/kurgetir',
+                    dataType: 'json',
+                    success: function(data) {
+                        var kurlar = data; // API'den gelen kurlar
+                        var fromCurrency = $('#from_currency').val();
+                        var toCurrency = $('#to_currency').val();
+                        var amount = parseFloat($('#amount').val());
+
+                        // Kurları kullanarak hesaplama yap
+                        var fromRate = kurlar[fromCurrency];
+                        var toRate = kurlar[toCurrency];
+
+                        if (fromRate && toRate) {
+                            var result = (amount * toRate) / fromRate;
+                            $('#result').html('<p><strong>Sonuç:</strong> ' + amount + ' ' + fromCurrency + ' = ' + result.toFixed(2) + ' ' + toCurrency + '</p>');
+                        } else {
+                            $('#result').html('<p>Hata: Geçersiz kur seçimi.</p>');
+                        }
+                    },
+                    error: function() {
+                        $('#result').html('<p>Hata: API'ye bağlanılamadı.</p>');
                     }
-                },
-                error: function() {
-                    $('#result').html('<p>Bir hata oluştu, lütfen tekrar deneyin.</p>');
-                }
+                });
             });
         });
-    });
-</script>
-
+    </script>
 </body>
 </html>
-        
